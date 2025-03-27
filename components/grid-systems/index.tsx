@@ -65,14 +65,14 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
 
   const styleDevice: string = getDeviceSize() as string;
 
-  const key = sliceRef?.id?.split('$')[0];
+  // const key = sliceRef?.id?.split('$')[0];
 
   const SliceComponent = useMemo(() => {
     const key = sliceRef?.id?.split('$')[0];
     return componentRegistry[key as keyof typeof componentRegistry];
   }, [sliceRef?.id]);
 
-  const isButton = key === 'button';
+  // const isButton = key === 'button';
 
   const styleSlice = (_.get(sliceRef, [styleDevice]) as React.CSSProperties) || sliceRef?.style;
 
