@@ -57,6 +57,7 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiData, slice, updateTitleInText]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const data = useMemo(() => {
     const key = sliceRef?.id?.split('$')[0];
     return componentHasAction.includes(key!) ? sliceRef : _.get(sliceRef, 'dataSlice');
@@ -114,11 +115,12 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
   );
 
   return sliceClasses || Object.keys(inlineStyles).length ? (
-    <div className={`${sliceClasses}`} style={isButton ? {} : inlineStyles}>
+    <div className={`${sliceClasses}`} style={inlineStyles}>
       {content}
     </div>
   ) : null;
 };
+
 export const RenderGrid: React.FC<RenderGripProps> = ({ idParent, slice }) => {
   const { apiData, addApiData } = useApiCallStore((state) => state);
   const [childs, setChilds] = useState<GridItem[]>(slice?.childs || []);
