@@ -104,7 +104,7 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
     <SliceComponent
       id={_.get(sliceRef, 'id')}
       style={styleSlice}
-      data={data}
+      data={sliceRef}
       childs={sliceRef?.childs}
     />
   ) : (
