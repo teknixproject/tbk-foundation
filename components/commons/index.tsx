@@ -17,4 +17,5 @@ export const components = {
   default: dynamic(() => import('./text')),
   navigation: dynamic(() => import('./navigation')),
   dropdown: dynamic(() => import('./dropdown')),
+  _text_custom: dynamic(() => import("./TextCustom")),
 };
