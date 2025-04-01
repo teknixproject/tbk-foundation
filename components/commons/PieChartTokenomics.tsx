@@ -1,5 +1,7 @@
 'use client';
 
+import Image from "next/image";
+
 export const PieChartTokenomics = () => {
   return (
     <div className="relative flex flex-col justify-center w-full">
