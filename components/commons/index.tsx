@@ -18,4 +18,5 @@ export const components = {
   navigation: dynamic(() => import('./navigation')),
   dropdown: dynamic(() => import('./dropdown')),
   _text_custom: dynamic(() => import("./TextCustom")),
+  _pie_chart_tokenomics: dynamic(() => import("./PieChartTokenomics")),
 };
