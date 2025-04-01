@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import _ from 'lodash';
@@ -11,22 +10,43 @@ interface DropdownProps {
   style?: any;
   data?: any;
   childs?: any[];
+  menuClassDropdow?: any;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ id, style = '', data = {}, childs = [] }) => {
-  console.log('🚀 ~ style:', style);
+const Dropdown: React.FC<DropdownProps> = ({
+  id,
+  style = '',
+  data = {},
+  childs = [],
+  menuClassDropdow,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  // Tạo ref để tham chiếu đến phần tử dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const buttonSelectedClass = style?.dropdownStyles?.buttonSelected
     ? style.dropdownStyles.buttonSelected.toString()
     : '';
   const menuClass = style?.dropdownStyles?.menu ? style.dropdownStyles.menu.toString() : '';
-  console.log('🚀 ~ childs:', childs);
   const buttonChildClass = style?.dropdownStyles?.button
     ? style.dropdownStyles.button.toString()
     : '';
-  console.log('🚀 ~ buttonSelectedClass:', { buttonSelectedClass, menuClass, buttonChildClass });
+
+  // Lắng nghe sự kiện click bên ngoài dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -66,6 +86,7 @@ const Dropdown: React.FC<DropdownProps> = ({ id, style = '', data = {}, childs =
             style={child.style || ''}
             data={child || {}}
             childs={child.childs || []}
+            menuClassDropdow={menuClass}
           />
         );
       default:
@@ -74,11 +95,10 @@ const Dropdown: React.FC<DropdownProps> = ({ id, style = '', data = {}, childs =
   };
 
   return (
-    <div className={cn(`relative inline-block`, menuClass)}>
-      <button
+    <div ref={dropdownRef} className={cn(`relative inline-block`, menuClassDropdow)}>
+      <div
         onClick={handleToggle}
-        className={`
-        transition-colors flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
+        className={`transition-colors flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
       >
         {selectedItem || data?.name || 'Dropdown'}
         <span>
@@ -88,7 +108,7 @@ const Dropdown: React.FC<DropdownProps> = ({ id, style = '', data = {}, childs =
             <Icon icon="iconamoon:arrow-down-2" width="24" height="24" />
           )}
         </span>
-      </button>
+      </div>
 
       {isOpen && (
         <div className={cn('absolute left-0 mt-2 z-10', menuClass)}>

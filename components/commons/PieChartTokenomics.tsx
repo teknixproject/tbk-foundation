@@ -1,32 +1,39 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import Image from "next/image";
+import Image from 'next/image';
 
-export const PieChartTokenomics = () => {
+import { CSSProperties } from 'react';
+
+import { useData } from '@/hooks';
+
+import { GridItem } from '../grid-systems/const';
+
+interface TextProps {
+  data: GridItem;
+  style?: CSSProperties;
+}
+
+const PieChartTokenomics = ({ data, style }: TextProps) => {
   return (
     <div className="relative flex flex-col justify-center w-full">
       <Image
         height={497.015}
         width={714}
-        src={"/assets/decor/shadow-blue.svg"}
+        src={'/assets/decor/shadow-blue.svg'}
         alt="decor-grid-bottom"
         className="absolute top-0 -translate-y-1/2 left-full -translate-x-1/2 blur-[100px] rotate-90"
       />
       <Image
         height={497.015}
         width={714}
-        src={"/assets/decor/shadow-blue.svg"}
+        src={'/assets/decor/shadow-blue.svg'}
         alt="decor-grid-bottom"
         className="absolute top-full -translate-y-1/2 left-0 -translate-x-1/2 blur-[100px] rotate-90"
       />
       <div className="absolute left-1/2 top-1/2 -translate-x-[40%] -translate-y-1/2">
         <div className="relative size-[186px] max-lg:size-[80px]">
-          <Image
-            alt="logo"
-            src={"/assets/icons/logo.png"}
-            fill
-            className="absolute object-cover"
-          />
+          <Image alt="logo" src={'/assets/icons/logo.png'} fill className="absolute object-cover" />
         </div>
       </div>
       {/* <TokenomicsChart
@@ -78,3 +85,5 @@ export const PieChartTokenomics = () => {
     </div>
   );
 };
+
+export default PieChartTokenomics;

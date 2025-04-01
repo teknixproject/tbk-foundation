@@ -3,12 +3,15 @@
 import _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useActions } from '@/hooks/useActions';
+import { GridItem } from '@/types/gridItem';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 
-import { GridItem } from '../grid-systems/const';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { convertStyle } from '@/lib/utils';
 
 interface StylesProps {
   style?: {
@@ -34,6 +37,10 @@ const Button = ({ data, style }: ButtonCompoProps) => {
 
   const isButtonGradient = _.get(data, 'isBtnGradient', false);
 
+  const tooltip = useMemo(() => {
+    return data?.tooltip;
+  }, [data]);
+
   const handleRouteClick = () => {
     if (route) {
       router.push(route);
@@ -49,8 +56,8 @@ const Button = ({ data, style }: ButtonCompoProps) => {
     maxWidth: '',
     width: '100%',
     height: '100%',
-    background: "",
-    backgroundColor: ""
+    background: '',
+    backgroundColor: '',
   };
   if (isButtonGradient) {
     return (
@@ -66,10 +73,10 @@ const Button = ({ data, style }: ButtonCompoProps) => {
     );
   }
 
-  return link ? (
+  const content = link ? (
     <Link href={link} passHref>
       <div
-        style={newStyle}
+        style={convertStyle(newStyle)}
         className="!text-16-500 rounded-full flex items-center gap-2 text-center"
       >
         {iconStart && <span className="icon-start">{iconStart}</span>}
@@ -80,7 +87,7 @@ const Button = ({ data, style }: ButtonCompoProps) => {
   ) : (
     <CsButton
       type="button"
-      style={newStyle}
+      style={convertStyle(newStyle)}
       onClick={route ? handleRouteClick : handleActionClick}
       className="cursor-pointer"
     >
@@ -88,6 +95,23 @@ const Button = ({ data, style }: ButtonCompoProps) => {
       <span>{title}</span>
       {iconEnd && <span className="icon-end">{iconEnd}</span>}
     </CsButton>
+  );
+
+  if (_.isEmpty(tooltip?.title)) return content;
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div style={newStyle} className="text-[#858585]">
+            {content}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent style={tooltip?.style}>
+          <p>{tooltip?.title}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
@@ -98,39 +122,13 @@ const flexCenter = {
 };
 
 const CsButton = styled.button<StylesProps>`
+  box-sizing: border-box;
   ${(props) =>
     _.get(props, 'style.after')
       ? Object.entries(flexCenter)
           .map(([key, value]) => `${key}: ${value};`)
           .join('\n')
       : ''}
-
-  &:hover {
-    ${(props) =>
-      props.style?.hover
-        ? Object.entries(props.style.hover)
-            .map(([key, value]) => `${key}: ${value} !important;`)
-            .join('\n')
-        : ''}
-  }
-
-  &::before {
-    ${(props) =>
-      props.style?.before
-        ? Object.entries(props.style.before)
-            .map(([key, value]) => `${key}: ${value};`)
-            .join('\n')
-        : ''}
-  }
-
-  &::after {
-    ${(props) =>
-      props.style?.after
-        ? Object.entries(props.style.after)
-            .map(([key, value]) => `${key}: ${value};`)
-            .join('\n')
-        : ''}
-  }
 `;
 
 export default Button;
