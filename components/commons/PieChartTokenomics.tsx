@@ -29,7 +29,7 @@ export const PieChartTokenomics = () => {
           />
         </div>
       </div>
-      <TokenomicsChart
+      {/* <TokenomicsChart
         series={[
           {
             name: "Reserve / Contingency",
@@ -74,7 +74,7 @@ export const PieChartTokenomics = () => {
             dataLabelColor: "#fff",
           },
         ]}
-      />
+      /> */}
     </div>
   );
 };
