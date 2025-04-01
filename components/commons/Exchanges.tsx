@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import getRandomNumber from "@/utils/getRandomNumber";
 import Image from "next/image";
 import React from "react";
+
 const data: any = {
   "3": {
     id: 3,
@@ -56,6 +56,11 @@ const data: any = {
     img: "/assets/icons/image 1682-9.png",
   },
 };
+
+function getRandomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function HomeExchanges() {
   return (
     <div
