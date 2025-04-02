@@ -95,11 +95,11 @@ function HomeExchanges() {
                     alt="coinbase"
                     width={100}
                     height={100}
-                    className={cn(
+                    {/* className={cn(
                       "rounded-full",
                       entry?.isIntersecting &&
                         "animate-fade animate-duration-[1500ms]"
-                    )}
+                    )} */}
                     style={{
                       animationDelay: `${getRandomNumber(300, 500)}ms`,
                     }}
@@ -121,18 +121,18 @@ function HomeExchanges() {
           className="absolute w-full h-full"
         />
         <p
-          className={cn(
+          {/* className={cn(
             "description",
             entry?.isIntersecting && "animate-fade-up animate-duration-[1500ms]"
-          )}
+          )} */}
         >
           Top best exchanges floors on the planet
         </p>
         <h2
-          className={cn(
+          {/* className={cn(
             "heading-1 text-center flex items-center gap-2 max-lg:inline",
             entry?.isIntersecting && "animate-fade-up animate-duration-[1500ms]"
-          )}
+          )} */}
         >
           List on the world’s TOP 10<p className="decor">Exchanges</p>
         </h2>
