@@ -40,8 +40,8 @@ const RenderUIClient = (props: any) => {
   const { setActions } = actionsStore();
 
   const { bodyLayout, footerLayout, headerLayout, isLoading } = useConstructorDataAPI(
-    props.documentId,
-    props.pathName
+    props?.documentId,
+    props?.pathName
   );
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const RenderUIClient = (props: any) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [props.page]);
+  }, [props?.page]);
 
   const getStates = async () => {
     const list: TTypeSelectState[] = ['appState', 'componentState', 'globalState'];
@@ -138,30 +138,35 @@ const RenderUIClient = (props: any) => {
 
   return (
     <div className="relative">
-      {/* Header */}
-      <GridSystemContainer
-        isLoading={isLoading}
-        {...props}
-        page={selectedHeaderLayout || {}}
-        deviceType={deviceType}
-        isHeader
-      />
-      {/* Body */}
-      <GridSystemContainer
-        isLoading={isLoading}
-        {...props}
-        page={selectedBodyLayout || {}}
-        deviceType={deviceType}
-        isBody
-      />
-      {/* Footer */}
-      <GridSystemContainer
-        isLoading={isLoading}
-        {...props}
-        page={selectedFooterLayout || {}}
-        deviceType={deviceType}
-        isFooter
-      />
+      {!_.isEmpty(selectedHeaderLayout) && (
+        <GridSystemContainer
+          isLoading={isLoading}
+          {...props}
+          page={selectedHeaderLayout || {}}
+          deviceType={deviceType}
+          isHeader
+        />
+      )}
+
+      {!_.isEmpty(selectedBodyLayout) && (
+        <GridSystemContainer
+          isLoading={isLoading}
+          {...props}
+          page={selectedBodyLayout || {}}
+          deviceType={deviceType}
+          isBody
+        />
+      )}
+
+      {!_.isEmpty(selectedFooterLayout) && (
+        <GridSystemContainer
+          isLoading={isLoading}
+          {...props}
+          page={selectedFooterLayout || {}}
+          deviceType={deviceType}
+          isFooter
+        />
+      )}
     </div>
   );
 };
