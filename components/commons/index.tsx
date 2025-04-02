@@ -18,4 +18,6 @@ export const components = {
   navigation: dynamic(() => import('./Navigation')),
   dropdown: dynamic(() => import('./Dropdown')),
   collapse: dynamic(() => import('./Collapse')),
+  _pie_chart_tokenomics: dynamic(() => import("./PieChartTokenomics")),
+  exchanges: dynamic(() => import("./Exchanges")),
 };
