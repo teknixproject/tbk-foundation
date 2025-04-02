@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import _ from 'lodash';
@@ -7,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useConstructorDataAPI, usePreviewUI } from '@/app/actions/use-constructor';
-import GridSystemContainer from '@/components/grid-systems';
+// import GridSystemContainer from '@/components/grid-systems';
 import { getDeviceType } from '@/lib/utils';
 import { actionService } from '@/services';
 import { apiCallService } from '@/services/apiCall';
@@ -17,10 +15,25 @@ import { actionsStore } from '@/stores/actions';
 import { stateManagementStore } from '@/stores/stateManagement';
 import { TTypeSelectState } from '@/types';
 
-import LoadingPage from './loadingPage';
-import SandPackUI from './preview-ui';
+// import LoadingPage from './loadingPage';
+// import SandPackUI from './preview-ui';
+import dynamic from 'next/dynamic';
 
 type DeviceType = 'mobile' | 'desktop';
+
+// Lazy load các thành phần
+const GridSystemContainer = dynamic(() => import('@/components/grid-systems'), {
+  loading: () => <LoadingPage />, // Hiển thị LoadingPage trong khi chờ
+  ssr: false, // Tắt SSR nếu chỉ cần tải phía client
+});
+const SandPackUI = dynamic(() => import('./preview-ui'), {
+  loading: () => <LoadingPage />,
+  ssr: false,
+});
+const LoadingPage = dynamic(() => import('./loadingPage'), {
+  ssr: false,
+});
+
 export default function ClientWrapper(props: any) {
   // const { isLoading } = useConstructorDataAPI(props.documentId, props.pathName);
 
@@ -35,6 +48,7 @@ export default function ClientWrapper(props: any) {
 const RenderUIClient = (props: any) => {
   //#region store
   const { setData } = layoutStore();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { addAndUpdateApiResource, apiResources } = apiResourceStore();
   const { setDataTypeDocumentVariable } = stateManagementStore();
   const { setActions } = actionsStore();
@@ -46,6 +60,7 @@ const RenderUIClient = (props: any) => {
 
   useEffect(() => {
     if (bodyLayout) setData(bodyLayout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // #region hooks
@@ -130,6 +145,7 @@ const RenderUIClient = (props: any) => {
     getStates();
     getApiCall();
     getActions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid, projectId]);
 
   if (isLoading) {
@@ -178,6 +194,7 @@ const PreviewUI = (props: any) => {
 
   //#region store
   const { setData } = layoutStore();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { addAndUpdateApiResource, apiResources } = apiResourceStore();
   const { setDataTypeDocumentVariable } = stateManagementStore();
   const { setActions } = actionsStore();
