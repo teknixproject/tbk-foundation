@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import clsx from "clsx";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
-import roundToTwoSignificantDecimals from "@/utils/roundtoTwoSignficantDecimals";
 import { getDeviceType } from "@/lib/utils";
 import styled from "styled-components";
 
@@ -14,6 +13,28 @@ export interface TokenomicsChartType {
 }
 
 // import Image from "next/image";
+
+function roundToTwoSignificantDecimals(num: number) {
+  try {
+    if (num >= 1) {
+      num = Math.floor(+num * 100) / 100;
+    }
+    const stringValue = num + "";
+    const indexOfDot = stringValue.indexOf(".");
+    if (indexOfDot == -1) return num;
+
+    const indexOfFirstNumberNotZeroAfterDot = stringValue
+      .split("")
+      ?.findIndex((char: string, i: number) => +char != 0 && i > indexOfDot);
+    const numOfNumberRemain =
+      indexOfFirstNumberNotZeroAfterDot - indexOfDot + 1;
+    return reduceZeroNoNecessary(
+      Math.floor(+num * 10 ** numOfNumberRemain) / 10 ** numOfNumberRemain
+    );
+  } catch (err: any) {
+    return num;
+  }
+}
 
 function TokenomicsChart({ series }: TokenomicsChartType) {
   const sizeScreen = getDeviceType();
