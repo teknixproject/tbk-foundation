@@ -450,3 +450,5 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
     </div>
   );
 };
+
+export default PieChartTokenomicsCompo
