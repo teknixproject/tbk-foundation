@@ -2,12 +2,13 @@
 'use client';
 
 import Image from "next/image";
-import { useMemo } from "react";
+import { CSSProperties, useMemo } from "react";
 import clsx from "clsx";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { getDeviceType } from "@/lib/utils";
-import styled, { CSSProperties } from "styled-components";
+import styled from "styled-components";
+import _ from "lodash";
 
 export interface TokenomicsChartType {
   series: any[];
