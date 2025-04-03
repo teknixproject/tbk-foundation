@@ -20,4 +20,5 @@ export const components = {
   collapse: dynamic(() => import('./Collapse')),
   pie_chart_tokenomics: dynamic(() => import('./PieChartTokenomics')),
   exchanges: dynamic(() => import('./Exchanges')),
+  _pie_chart_tokenomics: dynamic(() => import("./PieChartTokenomics")),
 };
