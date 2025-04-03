@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useMemo } from "react";
@@ -250,7 +251,7 @@ const CsHighchartsReact = styled(HighchartsReact)`
   }
 `;
 
-export const PieChartTokenomics = () => {
+const PieChartTokenomics = () => {
   return (
     <div className="relative flex flex-col justify-center w-full">
       {/* <Image
@@ -326,3 +327,5 @@ export const PieChartTokenomics = () => {
     </div>
   );
 };
+
+export default PieChartTokenomics;

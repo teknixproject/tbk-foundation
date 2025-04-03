@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import _ from 'lodash';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { cn } from '@/lib/utils';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import _ from 'lodash';
-import { usePathname } from 'next/navigation'; // Thay useLocation bằng usePathname
 
 interface DropdownProps {
   id: string;
@@ -17,18 +18,15 @@ interface DropdownProps {
 const Dropdown: React.FC<DropdownProps> = ({
   id,
   style = '',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   data = {},
   childs = [],
   menuClassDropdow,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const router = useRouter();
+  // Tạo ref để tham chiếu đến phần tử dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Lấy pathname từ Next.js
-  const pathname = usePathname(); // Ví dụ: "/faq"
-  const currentPath = pathname.split('/').pop() || ''; // Lấy phần cuối của pathname (ví dụ: "faq")
 
   const buttonSelectedClass = style?.dropdownStyles?.buttonSelected
     ? style.dropdownStyles.buttonSelected.toString()
@@ -38,21 +36,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     ? style.dropdownStyles.button.toString()
     : '';
 
-  // Khởi tạo selectedItem dựa trên pathname hoặc child đầu tiên
-  useEffect(() => {
-    if (childs.length > 0) {
-      // Tìm child có uid khớp với currentPath
-      const matchedChild = childs.find((child) => child.uid === currentPath);
-      if (matchedChild) {
-        setSelectedItem(matchedChild.name || _.get(matchedChild, 'dataSlice.title'));
-      } else {
-        // Nếu không khớp, chọn child đầu tiên
-        setSelectedItem(childs[0].name || _.get(childs[0], 'dataSlice.title') || 'Unnamed');
-      }
-    }
-  }, [childs, currentPath]);
-
-  // Lắng nghe sự kiện click bên ngoài để đóng dropdown
+  // Lắng nghe sự kiện click bên ngoài dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -71,10 +55,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const handleItemClick = (item: any) => {
-    if (item?.value === 'button' && item?.action?.type === 'navigate') {
-      console.log(`Navigating to page: ${item.action.pageId}`);
-    }
-    setSelectedItem(item?.name || _.get(item, 'dataSlice.title') || 'Unnamed');
+    if (item?.action?.pageId) router.push(`/${item.action.pageId}`);
+    setSelectedItem(item?.name || null);
     setIsOpen(false);
   };
 
@@ -88,13 +70,13 @@ const Dropdown: React.FC<DropdownProps> = ({
             onClick={() => handleItemClick(child)}
             className={`w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors ${buttonChildClass}`}
           >
-            {_.get(child, 'dataSlice.title') || child.name || 'Unnamed Button'}
+            {_.get(child, 'dataSlice.title') || 'Unnamed Button'}
           </button>
         );
       case 'text':
         return (
           <div className={`px-4 py-2 text-gray-700 ${buttonChildClass}`}>
-            {_.get(child, 'dataSlice.title') || child.name || 'Unnamed Text'}
+            {_.get(child, 'dataSlice.title') || 'Unnamed Text'}
           </div>
         );
       case 'dropdown':
@@ -114,11 +96,11 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className={cn(`relative inline-block`, menuClassDropdow)}>
-      <div
+      <button
         onClick={handleToggle}
         className={`transition-colors flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
       >
-        {selectedItem || 'Loading...'} {/* Hiển thị selectedItem hoặc "Loading..." nếu chưa có */}
+        {selectedItem || data?.name || 'Dropdown'}
         <span>
           {isOpen ? (
             <Icon icon="iconamoon:arrow-up-2" width="24" height="24" />
@@ -126,7 +108,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <Icon icon="iconamoon:arrow-down-2" width="24" height="24" />
           )}
         </span>
-      </div>
+      </button>
 
       {isOpen && (
         <div className={cn('absolute left-0 mt-2 z-10', menuClass)}>
