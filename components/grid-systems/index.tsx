@@ -1,14 +1,14 @@
 'use client';
 import _ from 'lodash';
 import dynamic from 'next/dynamic';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 import { rebuilComponentMonaco } from '@/app/actions/use-constructor';
 import { CONFIGS } from '@/configs';
 import { componentRegistry } from '@/lib/slices';
-import { cn, convertStyle, getDeviceSize } from '@/lib/utils';
+import { cn, convertStyle, getDeviceSize, setActive } from '@/lib/utils';
 import { useApiCallStore } from '@/providers';
 import { apiResourceStore } from '@/stores';
 import { GridItem } from '@/types/gridItem';
@@ -22,10 +22,13 @@ import { CsContainerRenderSlice } from './styles';
 
 const componentHasAction = ['pagination', 'button', 'input_text'];
 const allowUpdateTitle = ['content'];
-type TRenderSlice = { slice: GridItem | null | undefined; idParent: string };
+type TRenderSlice = { slice: GridItem | null | undefined; idParent: string; isMenu?: boolean };
 const { updateTitleInText } = dynamicGenarateUtil;
 
-export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
+export const RenderSlice: React.FC<TRenderSlice> = ({ slice, isMenu }) => {
+  const pathname = usePathname();
+  const cleanedPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+
   const { apiData } = useApiCallStore((state) => state);
   const [sliceRef, setSliceRef] = useState<GridItem | null | undefined>(slice);
 
@@ -59,14 +62,10 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
 
   const styleDevice: string = getDeviceSize() as string;
 
-  // const key = sliceRef?.id?.split('$')[0];
-
   const SliceComponent = useMemo(() => {
     const key = sliceRef?.id?.split('$')[0];
     return componentRegistry[key as keyof typeof componentRegistry];
   }, [sliceRef?.id]);
-
-  // const isButton = key === 'button';
 
   const styleSlice = (_.get(sliceRef, [styleDevice]) as React.CSSProperties) || sliceRef?.style;
 
@@ -94,7 +93,6 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
       gridTemplateColumns: sliceRef.type === 'grid' ? `repeat(${sliceRef.columns}, 1fr)` : '',
     };
   }, [sliceRef, styleDevice]);
-  console.log('🚀 ~ inlineStyles ~ inlineStyles:', inlineStyles);
 
   const content = SliceComponent ? (
     <SliceComponent
@@ -102,6 +100,8 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
       style={convertStyle(styleSlice)}
       data={sliceRef}
       childs={sliceRef?.childs}
+      isMenu={isMenu}
+      pathname={cleanedPath}
     />
   ) : (
     sliceRef?.childs && (
@@ -113,6 +113,7 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice }) => {
     <CsContainerRenderSlice
       className={`${sliceClasses} ${_.get(styleSlice, 'className', '')} `}
       style={inlineStyles}
+      isActive={setActive({ isMenu, data, cleanedPath })}
     >
       {content}
     </CsContainerRenderSlice>

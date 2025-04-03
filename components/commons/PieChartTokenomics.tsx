@@ -1,13 +1,13 @@
 'use client';
 
-import Image from "next/image";
-import { CSSProperties, useMemo } from "react";
-import clsx from "clsx";
-import HighchartsReact from "highcharts-react-official";
-import Highcharts from "highcharts";
-import { getDeviceType } from "@/lib/utils";
-import styled from "styled-components";
-import _ from "lodash";
+import Image from 'next/image';
+import { CSSProperties, useMemo } from 'react';
+import clsx from 'clsx';
+import HighchartsReact from 'highcharts-react-official';
+import Highcharts from 'highcharts';
+import { getDeviceType } from '@/lib/utils';
+import styled from 'styled-components';
+import _ from 'lodash';
 
 export interface TokenomicsChartType {
   series: any[];
@@ -17,8 +17,8 @@ export interface TokenomicsChartType {
 // import Image from "next/image";
 
 function reduceZeroNoNecessary(num: number) {
-  const stringValue = num + "";
-  const indexOfDot = stringValue.indexOf(".");
+  const stringValue = num + '';
+  const indexOfDot = stringValue.indexOf('.');
   if (indexOfDot == -1) return num;
   const length = stringValue.length;
   const result = stringValue;
@@ -36,27 +36,26 @@ function roundToTwoSignificantDecimals(num: number) {
     if (num >= 1) {
       num = Math.floor(+num * 100) / 100;
     }
-    const stringValue = num + "";
-    const indexOfDot = stringValue.indexOf(".");
+    const stringValue = num + '';
+    const indexOfDot = stringValue.indexOf('.');
     if (indexOfDot == -1) return num;
 
     const indexOfFirstNumberNotZeroAfterDot = stringValue
-      .split("")
+      .split('')
       ?.findIndex((char: string, i: number) => +char != 0 && i > indexOfDot);
-    const numOfNumberRemain =
-      indexOfFirstNumberNotZeroAfterDot - indexOfDot + 1;
+    const numOfNumberRemain = indexOfFirstNumberNotZeroAfterDot - indexOfDot + 1;
     return reduceZeroNoNecessary(
       Math.floor(+num * 10 ** numOfNumberRemain) / 10 ** numOfNumberRemain
     );
   } catch (error: any) {
-    console.log("Error", error);
+    console.log('Error', error);
     return num;
   }
 }
 
 function TokenomicsChart({ series }: TokenomicsChartType) {
   const sizeScreen = getDeviceType();
-  const isMobile = sizeScreen === "mobile";
+  const isMobile = sizeScreen === 'mobile';
 
   const total = useMemo(() => {
     return series?.reduce((total, serie) => total + serie?.y, 0);
@@ -68,7 +67,7 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
       y: !!serie.y ? Math.max(serie.y, (total / 100) * 3) : 0,
       dataLabels: {
         formatter: function (): string | null {
-          if ((this as any)?.options?.name == "") return null;
+          if ((this as any)?.options?.name == '') return null;
           return `${roundToTwoSignificantDecimals((serie.y * 100) / total)}%`;
         },
         enabled: !isMobile,
@@ -82,20 +81,16 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
 
     const length = newSeries?.length;
     const result = [];
-    const elementFull = series?.find(
-      (serie: any) => (serie.y * 100) / total >= 100
-    );
-    const index = newSeries?.findIndex(
-      (serie: any) => elementFull?.name == serie.name
-    );
+    const elementFull = series?.find((serie: any) => (serie.y * 100) / total >= 100);
+    const index = newSeries?.findIndex((serie: any) => elementFull?.name == serie.name);
     if (!!elementFull) return [newSeries[index]];
 
     for (let i = 0; i < length; i++) {
       result.push(newSeries[i]);
       result.push({
-        name: "",
+        name: '',
         y: total / 100,
-        color: "#FFE07000",
+        color: '#FFE07000',
         dataLabels: {
           enabled: false, // Hide data labels for this series only
         },
@@ -108,8 +103,8 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
 
   const chartOptions = {
     chart: {
-      type: "pie",
-      backgroundColor: "transparent",
+      type: 'pie',
+      backgroundColor: 'transparent',
       events: {
         render: function () {},
       },
@@ -124,18 +119,16 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
     },
     accessibility: {
       point: {
-        valueSuffix: "%",
+        valueSuffix: '%',
       },
     },
     title: null,
     tooltip: {
       pointFormatter: function (): string | null {
-        if ((this as any)?.options?.name == "") return null;
-        return `<b>${roundToTwoSignificantDecimals(
-          (this as any)?.options?.y
-        )}</b>`;
+        if ((this as any)?.options?.name == '') return null;
+        return `<b>${roundToTwoSignificantDecimals((this as any)?.options?.y)}</b>`;
       },
-      backgroundColor: "#00000055",
+      backgroundColor: '#00000055',
       enabled: false,
     },
     legend: {
@@ -144,7 +137,7 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
     plotOptions: {
       series: {
         allowPointSelect: true,
-        cursor: "pointer",
+        cursor: 'pointer',
         borderRadius: 12,
         dataLabels: [
           {
@@ -159,12 +152,12 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
                   </span>
             `,
             style: {
-              textOutline: "none",
-              fill: "none",
-              width: "250px",
-              fontSize: "24px",
-              fontWeight: "400",
-              color: "#000",
+              textOutline: 'none',
+              fill: 'none',
+              width: '250px',
+              fontSize: '24px',
+              fontWeight: '400',
+              color: '#000',
             },
           },
         ],
@@ -189,7 +182,7 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
           },
           chartOptions: {
             chart: {
-              height: "100%",
+              height: '100%',
             },
             plotOptions: {
               series: {
@@ -205,8 +198,8 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
                   </span>
             `,
                     style: {
-                      fontSize: "12px",
-                      fontWeight: "400",
+                      fontSize: '12px',
+                      fontWeight: '400',
                     },
                   },
                 ],
@@ -215,9 +208,9 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
           },
           series: [
             {
-              name: "Registrations",
+              name: 'Registrations',
               colorByPoint: true,
-              innerSize: "80%",
+              innerSize: '80%',
               data: finalSeries,
             },
           ],
@@ -226,9 +219,9 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
     },
     series: [
       {
-        name: "Registrations",
+        name: 'Registrations',
         colorByPoint: true,
-        innerSize: "60%",
+        innerSize: '60%',
         data: finalSeries,
       },
     ],
@@ -237,7 +230,9 @@ function TokenomicsChart({ series }: TokenomicsChartType) {
   return (
     <div
       className={clsx(
-        `w-full h-[768px] max-lg:h-full flex items-center justify-center ${isMobile && "pt-[32px] pb-[32px]"}`
+        `w-full h-[768px] max-lg:h-full flex items-center justify-center ${
+          isMobile && 'pt-[32px] pb-[32px]'
+        }`
       )}
     >
       <CsHighchartsReact highcharts={Highcharts} options={chartOptions} />
@@ -260,98 +255,80 @@ interface PieChartTokenomicsCompoProps {
 
 const PieChartTokenomicsCompo = ({ style }: PieChartTokenomicsCompoProps) => {
   const sizeScreen = getDeviceType();
-  const isMobile = sizeScreen === "mobile";
+  const isMobile = sizeScreen === 'mobile';
 
-  const colorText = _.get(style, "color", "#FFF");
-
-  const height = isMobile ? 400 : 497.015;
-  const width = isMobile ? 600 : 714;
+  const colorText = _.get(style, 'color') || '#FFF';
 
   return (
     <div className="relative flex flex-col justify-center w-full">
-      <Image
-        height={height}
-        width={width}
-        src={"/assets/decor/shadow-blue.svg"}
-        alt="decor-grid-bottom"
-        className="absolute top-0 -translate-y-1/2 left-full -translate-x-1/2 blur-[100px] rotate-90"
-        loading="lazy"
-      />
-      <Image
-        height={height}
-        width={width}
-        src={"/assets/decor/shadow-blue.svg"}
-        alt="decor-grid-bottom"
-        className="absolute top-full -translate-y-1/2 left-0 -translate-x-1/2 blur-[100px] rotate-90"
-        loading="lazy"
-      />
       <div
         style={{
-          left: isMobile ? "50%" : "42%",
+          left: isMobile ? '50%' : '41%',
         }}
-        className={`absolute ${isMobile ? "top-1/4" : "top-1/2"} -translate-x-[20%] max-sm:-translate-x-[40%] -translate-y-1/2`}
+        className={`absolute ${
+          isMobile ? 'top-1/4' : 'top-1/2'
+        } -translate-x-[20%] max-sm:-translate-x-[38%] -translate-y-1/2`}
       >
-        <div className="relative size-[186px] max-lg:size-[100px]">
-          <Image
-            alt="logo"
-            src={"/assets/icons/logo.svg"}
-            fill
-            className="absolute"
-          />
+        <div className="relative size-[186px] max-lg:size-[100px] h-[130px]">
+          <Image alt="logo" src={'https://res.cloudinary.com/dkvtxczjf/image/upload/v1743649413/uploads/LogoTBK-noColor.png'} fill className="absolute" />
         </div>
       </div>
       <TokenomicsChart
         series={[
           {
-            name: "Ecosystem / Development / Operation",
+            name: 'Ecosystem / Development / Operation',
             y: 15, // Percentage y
-            color: "#66BB60", // Green
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#66BB60', // Green
+            dataLabelColor: colorText ? colorText : '#fff',
           },
           {
-            name: "Investors / Strategic Partners",
+            name: 'Investors / Strategic Partners',
             y: 20, // Percentage y
-            color: "#C789E9", // Purple
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#C789E9', // Purple
+            dataLabelColor: colorText ? colorText : '#fff',
           },
           {
-            name: "Liquidity",
+            name: 'Liquidity',
             y: 10, // Percentage y
-            color: "#838AEC", // Blue
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#838AEC', // Blue
+            dataLabelColor: colorText ? colorText : '#fff',
           },
           {
-            name: "Team / Advisors",
+            name: 'Team / Advisors',
             y: 3, // Percentage y
-            color: "#FFA65D", // Orange
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#FFA65D', // Orange
+            dataLabelColor: colorText ? colorText : '#fff',
           },
           {
-            name: "Marketing",
+            name: 'Marketing',
             y: 35, // Percentage y
-            color: "#66DFCF", // Teal
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#66DFCF', // Teal
+            dataLabelColor: colorText ? colorText : '#fff',
           },
           {
-            name: "Community",
+            name: 'Community',
             y: 7, // Percentage y
-            color: "#F2FF65", // Yellow
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#F2FF65', // Yellow
+            dataLabelColor: colorText ? colorText : '#fff',
           },
 
           {
-            name: "Reserve / Contingency",
+            name: 'Reserve / Contingency',
             y: 10, // Percentage y
-            color: "#DF5D5F", // Red
-            dataLabelColor: colorText ? colorText : "#fff",
+            color: '#DF5D5F', // Red
+            dataLabelColor: colorText ? colorText : '#fff',
           },
         ]}
         colorText={colorText}
       />
-      {isMobile && <NotePieChart colorText={colorText} />}
+      {isMobile && <NotePieChart colorText={colorText || '#fff'} />}
     </div>
   );
 };
+
+const TextWithColor = styled.span<{ color: string }>`
+  color: ${(props) => props.color};
+`;
 
 const NotePieChart = ({ colorText }: { colorText: any }) => {
   return (
@@ -359,11 +336,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="self-stretch justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#65bb5f] rounded-full" />
         <div className="grow shrink basis-0">
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
             Ecosystem / Development / Operation
-          </span>
+          </TextWithColor>
           <span className="text-[#65bb5f] text-[13px] font-semibold font-['Poppins'] leading-loose">
             15%
           </span>
@@ -372,11 +350,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="self-stretch justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#c789e9] rounded-full" />
         <div className="grow shrink basis-0">
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Investors / Strategic Partners{" "}
-          </span>
+            Investors / Strategic Partners{' '}
+          </TextWithColor>
           <span className="text-[#c789e9] text-[13px] font-semibold font-['Poppins'] leading-loose">
             20%
           </span>
@@ -385,11 +364,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#838aec] rounded-full" />
         <div>
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Liquidity{" "}
-          </span>
+            Liquidity{' '}
+          </TextWithColor>
           <span className="text-[#838aec] text-[13px] font-semibold font-['Poppins'] leading-loose">
             10%
           </span>
@@ -398,11 +378,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#ffa55c] rounded-full" />
         <div>
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Team / Advisors{" "}
-          </span>
+            Team / Advisors{' '}
+          </TextWithColor>
           <span className="text-[#ffa55c] text-[13px] font-semibold font-['Poppins'] leading-loose">
             3%
           </span>
@@ -411,11 +392,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#65dad0] rounded-full" />
         <div>
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Marketing{" "}
-          </span>
+            Marketing{' '}
+          </TextWithColor>
           <span className="text-[#65dad0] text-[13px] font-semibold font-['Poppins'] leading-loose">
             35%
           </span>
@@ -424,11 +406,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#edfb68] rounded-full" />
         <div>
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Community{" "}
-          </span>
+            Community{' '}
+          </TextWithColor>
           <span className="text-[#c7d43a] text-[13px] font-semibold font-['Poppins'] leading-loose">
             7%
           </span>
@@ -437,11 +420,12 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
       <div className="self-stretch justify-start items-center gap-3 inline-flex">
         <div className="w-1.5 h-1.5 bg-[#df5e5f] rounded-full" />
         <div>
-          <span
-            className={`text-[${colorText}] text-[13px] font-normal font-['Poppins'] leading-loose`}
+          <TextWithColor
+            color={colorText || '#FFF'}
+            className={`text-[13px] font-normal font-['Poppins'] leading-loose`}
           >
-            Reserve / Contingency{" "}
-          </span>
+            Reserve / Contingency{' '}
+          </TextWithColor>
           <span className="text-[#df5e5f] text-[13px] font-semibold font-['Poppins'] leading-loose">
             10%
           </span>
@@ -451,4 +435,4 @@ const NotePieChart = ({ colorText }: { colorText: any }) => {
   );
 };
 
-export default PieChartTokenomicsCompo
+export default PieChartTokenomicsCompo;
