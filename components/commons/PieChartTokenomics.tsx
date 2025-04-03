@@ -263,14 +263,14 @@ const PieChartTokenomicsCompo = ({ style }: PieChartTokenomicsCompoProps) => {
     <div className="relative flex flex-col justify-center w-full">
       <div
         style={{
-          left: isMobile ? '50%' : '42%',
+          left: isMobile ? '50%' : '41%',
         }}
         className={`absolute ${
           isMobile ? 'top-1/4' : 'top-1/2'
-        } -translate-x-[20%] max-sm:-translate-x-[40%] -translate-y-1/2`}
+        } -translate-x-[20%] max-sm:-translate-x-[38%] -translate-y-1/2`}
       >
-        <div className="relative size-[186px] max-lg:size-[100px]">
-          <Image alt="logo" src={'/assets/icons/logo.svg'} fill className="absolute" />
+        <div className="relative size-[186px] max-lg:size-[100px] h-[130px]">
+          <Image alt="logo" src={'https://res.cloudinary.com/dkvtxczjf/image/upload/v1743649413/uploads/LogoTBK-noColor.png'} fill className="absolute" />
         </div>
       </div>
       <TokenomicsChart
