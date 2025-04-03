@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { useMemo } from "react";
 import clsx from "clsx";
 import HighchartsReact from "highcharts-react-official";
