@@ -25,6 +25,7 @@ const InputText: React.FC<Props> = ({ data }) => {
     height: '100%',
   };
   const variableName = _.get(data, 'dataSlice.variableName', '');
+  console.log();
 
   const { findVariable, updateDocumentVariable, componentState } = stateManagementStore();
   const { extractAllValuesFromTemplate } = variableUtil;

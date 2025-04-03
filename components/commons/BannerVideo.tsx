@@ -23,6 +23,7 @@ const BannerVideo = ({ data, style }: BannerVideoCompoProps) => {
     objectFit: 'fill',
     height: isMobile ? '100%' : 'auto',
   };
+  console.log();
 
   useEffect(() => {
     const handleScroll = () => {

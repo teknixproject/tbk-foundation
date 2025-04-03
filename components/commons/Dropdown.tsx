@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import _ from 'lodash';
+import { usePathname } from 'next/navigation'; // Thay useLocation bằng usePathname
 
 interface DropdownProps {
   id: string;
@@ -16,15 +17,18 @@ interface DropdownProps {
 const Dropdown: React.FC<DropdownProps> = ({
   id,
   style = '',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   data = {},
   childs = [],
   menuClassDropdow,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-
-  // Tạo ref để tham chiếu đến phần tử dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Lấy pathname từ Next.js
+  const pathname = usePathname(); // Ví dụ: "/faq"
+  const currentPath = pathname.split('/').pop() || ''; // Lấy phần cuối của pathname (ví dụ: "faq")
 
   const buttonSelectedClass = style?.dropdownStyles?.buttonSelected
     ? style.dropdownStyles.buttonSelected.toString()
@@ -34,7 +38,21 @@ const Dropdown: React.FC<DropdownProps> = ({
     ? style.dropdownStyles.button.toString()
     : '';
 
-  // Lắng nghe sự kiện click bên ngoài dropdown
+  // Khởi tạo selectedItem dựa trên pathname hoặc child đầu tiên
+  useEffect(() => {
+    if (childs.length > 0) {
+      // Tìm child có uid khớp với currentPath
+      const matchedChild = childs.find((child) => child.uid === currentPath);
+      if (matchedChild) {
+        setSelectedItem(matchedChild.name || _.get(matchedChild, 'dataSlice.title'));
+      } else {
+        // Nếu không khớp, chọn child đầu tiên
+        setSelectedItem(childs[0].name || _.get(childs[0], 'dataSlice.title') || 'Unnamed');
+      }
+    }
+  }, [childs, currentPath]);
+
+  // Lắng nghe sự kiện click bên ngoài để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -56,7 +74,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (item?.value === 'button' && item?.action?.type === 'navigate') {
       console.log(`Navigating to page: ${item.action.pageId}`);
     }
-    setSelectedItem(item?.name || null);
+    setSelectedItem(item?.name || _.get(item, 'dataSlice.title') || 'Unnamed');
     setIsOpen(false);
   };
 
@@ -70,13 +88,13 @@ const Dropdown: React.FC<DropdownProps> = ({
             onClick={() => handleItemClick(child)}
             className={`w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors ${buttonChildClass}`}
           >
-            {_.get(child, 'dataSlice.title') || 'Unnamed Button'}
+            {_.get(child, 'dataSlice.title') || child.name || 'Unnamed Button'}
           </button>
         );
       case 'text':
         return (
           <div className={`px-4 py-2 text-gray-700 ${buttonChildClass}`}>
-            {_.get(child, 'dataSlice.title') || 'Unnamed Text'}
+            {_.get(child, 'dataSlice.title') || child.name || 'Unnamed Text'}
           </div>
         );
       case 'dropdown':
@@ -100,7 +118,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         onClick={handleToggle}
         className={`transition-colors flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
       >
-        {selectedItem || data?.name || 'Dropdown'}
+        {selectedItem || 'Loading...'} {/* Hiển thị selectedItem hoặc "Loading..." nếu chưa có */}
         <span>
           {isOpen ? (
             <Icon icon="iconamoon:arrow-up-2" width="24" height="24" />

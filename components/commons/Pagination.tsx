@@ -19,7 +19,6 @@ type TProps = {
 };
 
 const Pagination: React.FC<TProps> = ({ style, data }) => {
-  console.log('🚀 Pagination~ data:', data);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1000);
   const { apiData, findApiData } = useApiCallStore((state) => state);

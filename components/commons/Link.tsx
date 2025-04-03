@@ -19,6 +19,7 @@ const LinkCompo = ({ data, style }: LinkCompoProps) => {
     textDecoration: 'underline',
     fontStyle: 'italic',
   };
+  console.log();
 
   return (
     <Link style={newStyle} href={link} className="w-full flex flex-wrap" prefetch={true}>

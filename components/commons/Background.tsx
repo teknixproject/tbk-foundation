@@ -23,7 +23,7 @@ const BackgroundCompo = ({ data, style }: BackgroundCompoProps) => {
     }),
     [style]
   );
-
+  console.log();
   return (
     <div id="background-compo" style={computedStyle}>
       {url ? (

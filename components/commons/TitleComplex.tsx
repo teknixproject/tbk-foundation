@@ -11,6 +11,7 @@ interface TitleComplexCompoProps {
 
 const TitleComplexCompo = ({ data, style }: TitleComplexCompoProps) => {
   const titles = _.get(data, 'dataSlice.titles', {});
+  console.log();
 
   return (
     <h2

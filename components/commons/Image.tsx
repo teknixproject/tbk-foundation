@@ -24,6 +24,7 @@ const Image = ({ data, style }: ImageProps) => {
   };
 
   const isBg = _.get(style, 'background');
+  console.log();
 
   return (
     <div

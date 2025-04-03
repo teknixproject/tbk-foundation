@@ -19,6 +19,7 @@ const Description = ({ data, style }: DescriptionProps) => {
     paddingBottom: 0,
     paddingTop: 0,
   };
+  console.log();
 
   return (
     <p style={newStyle} className="description text-pretty">

@@ -12,6 +12,7 @@ interface TitleHeaderProps {
 const TitleHeader = ({ data, style }: TitleHeaderProps) => {
   const deviceType = getDeviceType();
   const isMobile = deviceType === 'mobile';
+  console.log();
 
   const { title } = useData({ layoutData: data });
 
