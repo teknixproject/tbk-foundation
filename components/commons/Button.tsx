@@ -32,7 +32,7 @@ const Button = ({ data, style }: ButtonCompoProps) => {
   const link = _.get(data, 'dataSlice.link', '');
   const route = _.get(data, 'dataSlice.route', '');
   const router = useRouter();
-
+  console.log();
   const { handleActionClick } = useActions(data);
 
   const isButtonGradient = _.get(data, 'isBtnGradient', false);

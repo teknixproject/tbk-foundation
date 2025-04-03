@@ -28,6 +28,9 @@ const Text = ({ data, style }: TextProps) => {
     </div>
   );
   if (_.isEmpty(tooltip?.title)) return content;
+
+  console.log();
+  
   return (
     <TooltipProvider>
       <Tooltip>
