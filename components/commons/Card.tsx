@@ -17,6 +17,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ data, style }) => {
   const childs = _.get(data, 'childs', []);
   const { title } = useData({ layoutData: data });
+  console.log();
 
   const newStyle: CSSProperties = {
     lineHeight: '170%',
