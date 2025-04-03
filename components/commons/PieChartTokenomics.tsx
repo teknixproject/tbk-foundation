@@ -46,7 +46,8 @@ function roundToTwoSignificantDecimals(num: number) {
     return reduceZeroNoNecessary(
       Math.floor(+num * 10 ** numOfNumberRemain) / 10 ** numOfNumberRemain
     );
-  } catch () {
+  } catch (error: any) {
+    console.log("Error", error);
     return num;
   }
 }
