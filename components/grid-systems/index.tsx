@@ -17,18 +17,17 @@ import { dynamicGenarateUtil } from '@/uitls/dynamicGenarate';
 import NotFound from './404';
 import { GapGrid, GridRow, mapAlineItem, mapJustifyContent, SpanCol, SpanRow } from './const';
 import LoadingPage from './loadingPage';
-import { GridSystemProps, RenderGripProps } from './types';
 import { CsContainerRenderSlice } from './styles';
+import { GridSystemProps, RenderGripProps } from './types';
 
 const componentHasAction = ['pagination', 'button', 'input_text'];
+const componentHasMenu = ['dropdown'];
 const allowUpdateTitle = ['content'];
 type TRenderSlice = { slice: GridItem | null | undefined; idParent: string; isMenu?: boolean };
 const { updateTitleInText } = dynamicGenarateUtil;
 
 export const RenderSlice: React.FC<TRenderSlice> = ({ slice, isMenu }) => {
   const pathname = usePathname();
-  const cleanedPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-
   const { apiData } = useApiCallStore((state) => state);
   const [sliceRef, setSliceRef] = useState<GridItem | null | undefined>(slice);
 
@@ -54,18 +53,21 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice, isMenu }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiData, slice, updateTitleInText]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const key = sliceRef?.id?.split('$')[0];
   const data = useMemo(() => {
-    const key = sliceRef?.id?.split('$')[0];
     return componentHasAction.includes(key!) ? sliceRef : _.get(sliceRef, 'dataSlice');
   }, [sliceRef]);
 
   const styleDevice: string = getDeviceSize() as string;
 
+  // const key = sliceRef?.id?.split('$')[0];
+
   const SliceComponent = useMemo(() => {
     const key = sliceRef?.id?.split('$')[0];
     return componentRegistry[key as keyof typeof componentRegistry];
   }, [sliceRef?.id]);
+
+  // const isButton = key === 'button';
 
   const styleSlice = (_.get(sliceRef, [styleDevice]) as React.CSSProperties) || sliceRef?.style;
 
@@ -93,6 +95,7 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice, isMenu }) => {
       gridTemplateColumns: sliceRef.type === 'grid' ? `repeat(${sliceRef.columns}, 1fr)` : '',
     };
   }, [sliceRef, styleDevice]);
+  console.log('🚀 ~ inlineStyles ~ inlineStyles:', inlineStyles);
 
   const content = SliceComponent ? (
     <SliceComponent
@@ -100,20 +103,20 @@ export const RenderSlice: React.FC<TRenderSlice> = ({ slice, isMenu }) => {
       style={convertStyle(styleSlice)}
       data={sliceRef}
       childs={sliceRef?.childs}
-      isMenu={isMenu}
-      pathname={cleanedPath}
     />
   ) : (
     sliceRef?.childs && (
       <RenderGrid items={sliceRef.childs} idParent={sliceRef.id!} slice={sliceRef} />
     )
   );
-
+  const isMemuConvert = isMenu || componentHasMenu.includes(key || '');
+  console.log('🚀 ~ isMemuConvert:', { isMemuConvert, key });
+  const isActive = setActive({ isMenu: isMemuConvert, data, cleanedPath: pathname });
   return sliceClasses || Object.keys(inlineStyles).length ? (
     <CsContainerRenderSlice
       className={`${sliceClasses} ${_.get(styleSlice, 'className', '')} `}
       style={inlineStyles}
-      isActive={setActive({ isMenu, data, cleanedPath })}
+      is-active={!!isActive == true ? 'true' : 'false'}
     >
       {content}
     </CsContainerRenderSlice>
@@ -242,11 +245,7 @@ const GridSystemContainer = ({ page, deviceType, isBody, isHeader, isFooter }: G
         isFooter ? 'z-3' : ''
       )}
     >
-      <MonacoContainerRoot key={refreshKey}>
-        {content}
-
-        {/* {isBody && <div className="h-screen bg-amber-50"></div>} */}
-      </MonacoContainerRoot>
+      <MonacoContainerRoot key={refreshKey}>{content}</MonacoContainerRoot>
     </div>
   );
 };

@@ -32,12 +32,22 @@ interface GridItem {
   valueRender?: ValueRender;
   dynamicGenerate?: TDynamicGenarate;
   state?: DocumentType;
+  name?: string;
   action?: any;
 
-  //collapse
   collapse?: TCollapse;
   tooltip?: TTooltip;
+  dropdown?: TDropdown;
+  inputText?: TInputText;
 }
+
+export type TInputText = {
+  prefixIcon?: string;
+  suffixIcon?: string;
+};
+export type TDropdown = {
+  styleChild: React.CSSProperties;
+};
 export type TTooltip = {
   title: string;
   style: React.CSSProperties;
