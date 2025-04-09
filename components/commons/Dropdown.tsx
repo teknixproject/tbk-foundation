@@ -2,12 +2,13 @@
 'use client';
 
 import _ from 'lodash';
-import { useRouter } from 'next/navigation';
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { cn, setActive } from '@/lib/utils';
+import { useData } from '@/hooks';
+import { cn } from '@/lib/utils';
+import { GridItem } from '@/types/gridItem';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import styled from 'styled-components';
 
 interface DropdownProps {
   id: string;
@@ -25,12 +26,20 @@ const Dropdown: React.FC<DropdownProps> = ({
   menuClassDropdow,
   ...props
 }) => {
+  console.log('🚀Dropdown ~ data:', data);
+  const pathname = usePathname();
+  const cleanedPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const { title } = useData({ layoutData: data, defaultTitle: 'Dropdown' });
   const router = useRouter();
-  const pathname = _.get(props, 'pathname');
-  const isMenu = _.get(props, 'isMenu');
+  // Tạo ref để tham chiếu đến phần tử dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const dropdownItems: { label: string; value: string }[] = data?.childs?.map((item: GridItem) => ({
+    label: item?.dataSlice?.title,
+    value: item?.action?.pageId,
+  }));
 
   const buttonSelectedClass = style?.dropdownStyles?.buttonSelected
     ? style.dropdownStyles.buttonSelected.toString()
@@ -42,6 +51,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const styleChild: React.CSSProperties = data?.dropdown?.styleChild || {};
 
+  // Lắng nghe sự kiện click bên ngoài dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -56,21 +66,10 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, []);
 
   useEffect(() => {
-    if (childs.length > 0 && isMenu) {
-      const matchedChild = childs.find(
-        (child) => child?.action?.pageId && pathname === `/${child.action.pageId}`
-      );
-
-      if (matchedChild) {
-        setSelectedItem(matchedChild.pageId || _.get(matchedChild, 'dataSlice.title') || 'Unnamed');
-      } else {
-        const firstChild = childs[0];
-        setSelectedItem(firstChild.pageId || _.get(firstChild, 'dataSlice.title') || 'Unnamed');
-      }
-    } else {
-      setSelectedItem(data?.name || 'Dropdown');
-    }
-  }, [pathname, childs, data, isMenu]);
+    if (!pathname) return;
+    const label = dropdownItems?.find((item) => pathname.includes(item.value))?.label || title;
+    setSelectedItem(label);
+  }, [pathname]);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -118,13 +117,13 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className={cn(`relative inline-block`, menuClassDropdow)}>
-      <CsButtonSelected
+      <button
         onClick={handleToggle}
-        className={`transition-colors flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
-        isActive={setActive({ isMenu, data, cleanedPath: pathname })}
+        type="button"
+        className={`cursor-pointer transition-all flex items-center gap-2 focus:bg-[##ffffff47] ${buttonSelectedClass}`}
         style={style}
       >
-        {selectedItem}
+        {selectedItem || data?.name || 'Dropdown'}
         <span>
           {isOpen ? (
             <Icon icon="iconamoon:arrow-up-2" width="24" height="24" />
@@ -132,19 +131,22 @@ const Dropdown: React.FC<DropdownProps> = ({
             <Icon icon="iconamoon:arrow-down-2" width="24" height="24" />
           )}
         </span>
-      </CsButtonSelected>
-
+      </button>
       {isOpen && (
         <div
-          className={cn('absolute left-0 mt-2 z-10 rounded-xl min-w-40', menuClass, {
-            'bg-white': !styleChild?.backgroundColor,
-            'text-gray-700': !styleChild?.color,
-            'p-2':
-              !styleChild?.paddingTop &&
-              !styleChild?.paddingRight &&
-              !styleChild?.paddingBottom &&
-              !styleChild?.paddingLeft,
-          })}
+          className={cn(
+            'absolute left-0 mt-2 z-10 rounded-xl min-w-40 w-fit text-nowrap',
+            menuClass,
+            {
+              'bg-white': !styleChild?.backgroundColor,
+              'text-gray-700': !styleChild?.color,
+              'p-2':
+                !styleChild?.paddingTop &&
+                !styleChild?.paddingRight &&
+                !styleChild?.paddingBottom &&
+                !styleChild?.paddingLeft,
+            }
+          )}
           style={styleChild}
         >
           {childs.length > 0 ? (
@@ -161,23 +163,5 @@ const Dropdown: React.FC<DropdownProps> = ({
     </div>
   );
 };
-
-interface StylesProps {
-  style?: {
-    hover?: CSSProperties;
-    [key: string]: any;
-  };
-  isActive?: boolean;
-}
-
-const CsButtonSelected = styled.button<StylesProps>`
-  box-sizing: border-box;
-  ${(props) =>
-    props.isActive && props.style?.hover
-      ? Object.entries(props.style.hover)
-          .map(([key, value]) => `${key}: ${value};`)
-          .join('\n')
-      : ''}
-`;
 
 export default Dropdown;
