@@ -21,4 +21,5 @@ export const components = {
   pie_chart_tokenomics: dynamic(() => import('./PieChartTokenomics')),
   exchanges: dynamic(() => import('./Exchanges')),
   _pie_chart_tokenomics: dynamic(() => import("./PieChartTokenomics")),
+  email_signup_input: dynamic(() => import("./EmailSignupInput")),
 };
