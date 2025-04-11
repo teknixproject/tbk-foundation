@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useConstructorDataAPI, usePreviewUI } from '@/app/actions/use-constructor';
-// import GridSystemContainer from '@/components/grid-systems';
 import { getDeviceType } from '@/lib/utils';
 import { actionService } from '@/services';
 import { apiCallService } from '@/services/apiCall';
@@ -15,16 +14,13 @@ import { actionsStore } from '@/stores/actions';
 import { stateManagementStore } from '@/stores/stateManagement';
 import { TTypeSelectState } from '@/types';
 
-// import LoadingPage from './loadingPage';
-// import SandPackUI from './preview-ui';
 import dynamic from 'next/dynamic';
 
 type DeviceType = 'mobile' | 'desktop';
 
-// Lazy load các thành phần
 const GridSystemContainer = dynamic(() => import('@/components/grid-systems'), {
-  loading: () => <LoadingPage />, // Hiển thị LoadingPage trong khi chờ
-  ssr: false, // Tắt SSR nếu chỉ cần tải phía client
+  loading: () => <LoadingPage />,
+  ssr: false,
 });
 const SandPackUI = dynamic(() => import('./preview-ui'), {
   loading: () => <LoadingPage />,
@@ -35,8 +31,6 @@ const LoadingPage = dynamic(() => import('./loadingPage'), {
 });
 
 export default function ClientWrapper(props: any) {
-  // const { isLoading } = useConstructorDataAPI(props.documentId, props.pathName);
-
   const isPreviewUI = _.get(props, 'pathName') === 'preview-ui';
 
   if (isPreviewUI) {
@@ -145,7 +139,7 @@ const RenderUIClient = (props: any) => {
     getStates();
     getApiCall();
     getActions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid, projectId]);
 
   if (isLoading) {
@@ -283,6 +277,7 @@ const PreviewUI = (props: any) => {
     getStates();
     getApiCall();
     getActions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid, projectId]);
 
   //#region render
@@ -293,7 +288,7 @@ const PreviewUI = (props: any) => {
   return (
     <div className="component-preview-container">
       {isPage ? (
-        <div className="relative">
+        <div className="relative flex flex-col justify-between min-h-screen">
           {!_.isEmpty(selectedHeaderLayout) && (
             <GridSystemContainer
               isLoading={isLoading}
@@ -304,7 +299,7 @@ const PreviewUI = (props: any) => {
             />
           )}
 
-          {!_.isEmpty(selectedBodyLayout) && (
+          {!_.isEmpty(selectedBodyLayout) ? (
             <GridSystemContainer
               isLoading={isLoading}
               {...props}
@@ -312,6 +307,8 @@ const PreviewUI = (props: any) => {
               deviceType={deviceType}
               isBody
             />
+          ) : (
+            <div className="h-[300px]" />
           )}
 
           {!_.isEmpty(selectedFooterLayout) && (
