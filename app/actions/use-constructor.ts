@@ -49,9 +49,9 @@ export function useConstructorDataAPI(documentId?: string, pageName?: string) {
   }
 
   return {
-    headerLayout: _.get(data, 'headerLayout.layoutJson', {}),
-    bodyLayout: _.get(data, 'bodyLayout.layoutJson', {}),
-    footerLayout: _.get(data, 'footerLayout.layoutJson', {}),
+    headerLayout: _.get(data, 'data.headerLayout.layoutJson', {}),
+    bodyLayout: _.get(data, 'data.bodyLayout.layoutJson', {}),
+    footerLayout: _.get(data, 'data.footerLayout.layoutJson', {}),
     component: isValidComponent ? componentString : {},
     isLoading: false,
   };
@@ -90,7 +90,7 @@ export function usePreviewUI(projectId?: string, uid?: string | null) {
   if (!dataPreviewUI) return { data: {}, isLoading: true };
 
   return {
-    dataPreviewUI,
+    dataPreviewUI: dataPreviewUI?.data,
     isLoading: false,
   };
 }
